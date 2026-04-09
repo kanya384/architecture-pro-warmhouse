@@ -30,10 +30,11 @@ public class DeviceService {
         if (requestDto.deviceType().equals(TEMPERATURE.name())) {
             SensorResponse sensorResponse = monolithClient.create(SensorCreate.builder()
                     .name(requestDto.name())
-                    .type(TEMPERATURE.name())
+                    .type(TEMPERATURE.name().toLowerCase())
                     .location(requestDto.houseId().toString())
                     .unit("°C")
                     .build());
+
             return DeviceResponseDto.builder()
                     .id(sensorResponse.id())
                     .name(sensorResponse.name())
