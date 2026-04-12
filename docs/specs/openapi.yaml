@@ -1,0 +1,235 @@
+openapi: 3.0.4
+info:
+  title: WarmHouse - OpenAPI 3.0
+urls:
+  - name: identity-service
+    url: identity-service.yaml
+tags:
+  - name: identiry-service
+    description: Single Sign On
+  - name: device-service
+    description: Управление устройствами
+paths:
+  /register:
+    post:
+      tags:
+        - identiry-service
+      summary: Регистрация пользователя в системе.
+      description: Регистрация пользователя в системе
+      operationId: register
+      requestBody:
+        description: Регистрация пользователя в системе
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterRequest'
+        required: true
+      responses:
+        '200':
+          description: Регистрация выполнена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Незаполненны обязательные параметры
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /login:
+    post:
+      tags:
+        - identiry-service
+      summary: Аутентификация пользователя в системе.
+      description: Аутентификация пользователя в системе
+      operationId: login
+      requestBody:
+        description: Аутентификация пользователя в системе
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Аутентификация выполнена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '404':
+          description: Пользователь не найден
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /refresh:
+    post:
+      tags:
+        - identiry-service
+      summary: Получение новой пары токенов по refresh токену
+      description: Получение новой пары токенов по refresh токену
+      operationId: refresh
+      requestBody:
+        description: Получение новой пары токенов по refresh токену
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+        required: true
+      responses:
+        '200':
+          description: Аутентификация выполнена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshTokenResponse'
+        '400':
+          description: Невалидный рефреш токен
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /device:
+    post:
+      tags:
+        - device-service
+      summary: Создание нового устройства
+      description: Создание нового устройства
+      operationId: device-create
+      requestBody:
+        description: Создание нового устройства
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeviceRequest'
+        required: true
+      responses:
+        '200':
+          description: Устройство успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceResponse'
+        '400':
+          description: Незаполненны обязательные параметры
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    UserRegisterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Иванов И.И.
+        email:
+          type: string
+          example: test01@mail.ru
+        password:
+          type: string
+          example: qwerty123
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Иванов И.И.
+        email:
+          type: string
+          example: test01@mail.ru
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: test01@mail.ru
+        password:
+          type: string
+          example: qwerty123
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+    RefreshTokenRequest:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+    RefreshTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+    CreateDeviceRequest:
+      type: object
+      properties:
+        houseId:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Настольная лампа
+        deviceType:
+          type: string
+          example: LAMP
+        status:
+          type: string
+          example: ON
+    DeviceResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        houseId:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Настольная лампа
+        deviceType:
+          type: string
+          example: LAMP
+        status:
+          type: string
+          example: ON
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message

@@ -1,0 +1,86 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create_devices_table" author="laurkan">
+        <preConditions>
+            <not>
+                <tableExists tableName="devices"/>
+            </not>
+        </preConditions>
+        <createTable tableName="devices">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="house_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="device_type" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="devices"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="create_modules_table" author="laurkan">
+        <preConditions>
+            <not>
+                <tableExists tableName="modules"/>
+            </not>
+        </preConditions>
+        <createTable tableName="modules">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="unit" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="device_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="devices"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="create_modules_foreign_key_device_type_id" author="laurkan">
+        <preConditions>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_modules_device_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="modules"
+                                 baseColumnNames="device_id"
+                                 referencedTableName="devices"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 constraintName="fk_modules_device_id"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="modules" constraintName="fk_modules_device_id"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
